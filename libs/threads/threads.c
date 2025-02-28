@@ -11,8 +11,7 @@
 thread_t thread_create(void (*func)(void*), void* argc)
 {
   printf("done0\n");
-  void* stack;
-  stack = malloc(STACK_SIZE);
+  void* stack = malloc(STACK_SIZE);
 
   if(!stack)
   {

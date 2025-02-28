@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -O3
+CFLAGS=-Wall -Wextra -O3 -g
 EXAMPLES=./examples
 OSCORE=./libs
-BUILD=./build
+BUILD=build
 INC=./include
 
 .PHONY: all examples clean_examples libs clean
@@ -13,7 +13,7 @@ OBJEX := $(patsubst $(EXAMPLES)/%.c, $(EXAMPLES)/%.a, $(SRCEX))
 examples: $(OBJEX)
 
 $(EXAMPLES)/%.a: $(EXAMPLES)/%.c
-	$(CC) $(CFLAGS) -I$(INC) $< -o $@ build/threads/threads.o build/atomic/aint.o
+	$(CC) $(CFLAGS) -I$(INC) $(BUILD)/**/* $< -o $@ 
 
 SRCH := $(shell find $(OSCORE) -name '*.h')
 OBJH := $(patsubst $(OSCORE)/%.h, $(INC)/%.h, $(SRCH))
