@@ -10,9 +10,11 @@ int main(void)
   push(stack);
   push(stack);
   
-  queue* a = pop(&stack);
-  printf("id: %d\n", a->id);
-  free(a);
+  printf("back id: %d\n", back(stack).id);
+  node node = front(stack);
+  printf("front id: %d\n", node.id);
+  pop(&stack);
+  printf("back id: %d\n", back(stack).id);
 
   queue_destroy(&stack);
   printf("Correct exit\n");

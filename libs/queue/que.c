@@ -10,9 +10,13 @@ queue* queue_init()
     perror("failed queue initialization");
     exit(EXIT_FAILURE);
   }
+  
+  node node_v = {
+    -1,
+    NULL
+  };
 
-  q->id = -1;
-  q->stucture = NULL;
+  q->node_v = node_v;
   q->next = NULL;
 
   return q;
@@ -20,10 +24,16 @@ queue* queue_init()
 
 void push(queue* q)
 {
-  if(q->id == -1) {
-    q->id = 0;
+  if(q->node_v.id == -1) {
+    node node_v = {
+      0,
+      NULL
+    };
+
+    q->node_v = node_v;
     return;
   }
+
   while(q->next != NULL) {
     q = q->next;
   }
@@ -34,20 +44,38 @@ void push(queue* q)
     exit(EXIT_FAILURE);
   }
 
-  atomic_int_t aint = q->id >= 0 ? q->id : 0;
-  int old = atomic_fetch_add(&aint, 1);
-  q->next->id = aint;
+  int aint = q->node_v.id + 1;
+  node node_v = {
+    aint,
+    NULL,
+  };
+
+  q->next->node_v = node_v;
   q->next->next = NULL;
 }
 
-queue* pop(queue** q)
+node front(queue* q)
 {
-  if(!*q) return NULL;
+  return q->node_v;
+}
 
+node back(queue* q)
+{
+  queue* head = q;
+
+  while(head->next) {
+    head = head->next;
+  }
+
+  return head->node_v;
+}
+
+void pop(queue** q)
+{
   queue* head = *q;
   *q = (*q)->next;
 
-  return head;
+  free(head);
 }
 
 void queue_destroy(queue** q)
