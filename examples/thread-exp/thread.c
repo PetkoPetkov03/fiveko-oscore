@@ -1,4 +1,4 @@
-#include <threads/threads.h>
+#include "../../libs/threads/threads.h"
 #include <stdio.h>
 #include <unistd.h>
 

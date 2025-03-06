@@ -1,5 +1,4 @@
-#include <queue/que.h>
-#include <stdlib.h>
+#include "../../libs/queue/que.h"
 #include <stdio.h>
 
 int main(void)

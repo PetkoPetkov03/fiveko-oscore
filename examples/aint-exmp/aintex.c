@@ -1,4 +1,4 @@
-#include <atomic/aint.h>
+#include "../../libs/atomic/aint.h"
 #include <stdio.h>
 int main(void)
 {
