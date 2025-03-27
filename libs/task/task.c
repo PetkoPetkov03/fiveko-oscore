@@ -43,6 +43,10 @@ int create_task(void (*start_routine)())
 
 int task_flush(void)
 {
+    while(front(tcb_queue)) {
+        pop(tcb_queue);
+    }
+
     queue_destroy(&tcb_queue);
 
     if(tcb_queue != NULL) {

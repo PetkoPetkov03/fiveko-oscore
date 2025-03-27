@@ -6,86 +6,88 @@ queue* queue_init()
 {
   queue* q = (queue*)malloc(sizeof(queue));
 
-  if(!q) {
-    perror("failed queue initialization");
-    exit(EXIT_FAILURE);
-  }
+  if(!q) return NULL;
 
-  node node_v = {
-    -1,
-    NULL
-  };
+  q->front = q->rear = NULL;
 
-  q->node_v = node_v;
-  q->next = NULL;
+  q->size = 0;
 
   return q;
 }
 
 void push(queue* q, void* value)
 {
-  if(q->node_v.id == -1) {
-    node node_v = {
-      0,
-      value
-    };
+    if(!q) {
+        perror("queue not initialized");
+        return;
+    }
 
-    q->node_v = node_v;
-    return;
-  }
+    node* new_node = (node*)malloc(sizeof(node));
 
-  while(q->next != NULL) {
-    q = q->next;
-  }
+    if(!new_node) {
+        perror("node allocation failure");
+        return;
+    }
 
-  q->next = (queue*)malloc(sizeof(queue));
-  if(!q->next) {
-    perror("push memory allocation failed!");
-    exit(EXIT_FAILURE);
-  }
+    new_node->id = 0;
+    if(q->rear) {
+        new_node->id = q->rear->id + 1;
+        q->rear->next = new_node;
+    }
 
-  int aint = q->node_v.id + 1;
-  node node_v = {
-    aint,
-    value,
-  };
+    new_node->content = value;
 
-  q->next->node_v = node_v;
-  q->next->next = NULL;
+    q->rear = new_node;
+
+    if(!q->front) {
+        q->front = new_node;
+    }
+
+    q->size++;
 }
 
-node front(queue* q)
+node* front(queue* q)
 {
-  return q->node_v;
+  return (q && q->front) ? q->front->content : NULL;
 }
 
-node back(queue* q)
+node* back(queue* q)
 {
-  queue* head = q;
-
-  while(head->next) {
-    head = head->next;
-  }
-
-  return head->node_v;
+    return (q && q->rear) ? q->rear->content : NULL;
 }
 
-void pop(queue** q)
+void* pop(queue* q)
 {
-  queue* head = *q;
-  *q = (*q)->next;
+    if(!q && !q->front) return NULL;
 
-  free(head);
+    node* temp = q->front;
+
+    void* content = temp->content;
+
+    q->front = q->front->next;
+    if(!q->front) {
+        q->rear = NULL;
+    }
+
+    free(temp);
+
+    q->size--;
+
+    return content;
 }
 
 void queue_destroy(queue** q)
 {
-  queue* head = *q;
-  while(head) {
-    queue* temp = head;
-    head = head->next;
-    free(temp);
-  }
+    if(!q && !*q) return;
 
-  *q = NULL;
+    node* current = (*q)->front;
+
+    while(current) {
+        node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    free(*q);
+    *q = NULL;
 }
