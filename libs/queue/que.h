@@ -8,13 +8,13 @@ typedef struct __node__ {
 } node;
 
 typedef struct  __os_q__ {
-  struct __node__ node_v; 
+  struct __node__ node_v;
   struct __os_q__* next;
 } queue;
 
 queue* queue_init();
 
-void push(queue*);
+void push(queue*, void*);
 
 void pop(queue**);
 

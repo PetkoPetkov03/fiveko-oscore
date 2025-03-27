@@ -10,7 +10,7 @@ queue* queue_init()
     perror("failed queue initialization");
     exit(EXIT_FAILURE);
   }
-  
+
   node node_v = {
     -1,
     NULL
@@ -22,12 +22,12 @@ queue* queue_init()
   return q;
 }
 
-void push(queue* q)
+void push(queue* q, void* value)
 {
   if(q->node_v.id == -1) {
     node node_v = {
       0,
-      NULL
+      value
     };
 
     q->node_v = node_v;
@@ -47,7 +47,7 @@ void push(queue* q)
   int aint = q->node_v.id + 1;
   node node_v = {
     aint,
-    NULL,
+    value,
   };
 
   q->next->node_v = node_v;

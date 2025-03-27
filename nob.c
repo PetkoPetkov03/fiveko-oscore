@@ -27,16 +27,23 @@ int main(int argc, char** argv)
   if(!nob_mkdir_if_not_exists(BUILD"mutex")) return 1;
   if(!nob_mkdir_if_not_exists(BUILD"semaphor")) return 1;
   if(!nob_mkdir_if_not_exists(BUILD"threads")) return 1;
+  if(!nob_mkdir_if_not_exists(BUILD"task")) return 1;
 
   char* base[4] = {
     "gcc",
     "-Wall",
     "-Wextra",
     "-O3"
-  };
-  
+};
+
   nob_mullti_append(&cmd, base, 4);
   nob_cmd_append(&cmd, "-o", BUILD"queue/que.o", "-c", LIBS"queue/que.c");
+
+  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+  nob_mullti_append(&cmd, base, 4);
+  nob_cmd_append(&cmd, "-o", BUILD"task/task.o", "-c",
+  LIBS"task/task.c");
 
   if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
@@ -55,23 +62,29 @@ int main(int argc, char** argv)
 
 
   nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"threads/threads.o", "-c", LIBS"threads/threads.c");
+  nob_cmd_append(&cmd, "-o", BUILD"threads/threads.o", "-c",
+  LIBS"threads/threads.c");
   if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
   nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"thread-exp/thread.a", 
+  nob_cmd_append(&cmd, "-o", EXAMPLES"thread-exp/thread.a",
                  EXAMPLES"thread-exp/thread.c", BUILD"threads/threads.o");
   if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  
   nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"aint-exmp/aintex.a", EXAMPLES"aint-exmp/aintex.c", BUILD"atomic/aint.o");
+  nob_cmd_append(&cmd, "-o", EXAMPLES"aint-exmp/aintex.a",
+  EXAMPLES"aint-exmp/aintex.c", BUILD"atomic/aint.o");
   if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
 
   nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"queue-ex/q.a", EXAMPLES"queue-ex/q.c", BUILD"queue/que.o");
+  nob_cmd_append(&cmd, "-o", EXAMPLES"tcb/tcb.a",
+  EXAMPLES"tcb/tcb.c", BUILD"task/task.o", BUILD"queue/que.o");
   if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+  // nob_mullti_append(&cmd, base, 4);
+  // nob_cmd_append(&cmd, "-o", EXAMPLES"queue-ex/q.a",
+  // EXAMPLES"queue-ex/q.c", BUILD"queue/que.o");
+  // if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
   return 0;
 }

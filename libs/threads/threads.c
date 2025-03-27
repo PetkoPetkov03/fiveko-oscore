@@ -20,7 +20,7 @@ thread_t thread_create(void (*func)(void*), void* argc)
   }
   int flags = CLONE_VM|CLONE_THREAD|CLONE_SIGHAND;
 
-  pid_t id = clone(func, (char*)stack+STACK_SIZE, flags, argc);
+  pid_t id = syscall(SYS_clone3, func, (char*)stack+STACK_SIZE, flags, argc);
 
   if(id == -1)
   {
@@ -34,5 +34,5 @@ thread_t thread_create(void (*func)(void*), void* argc)
 
 void thread_join(thread_t* thread)
 {
-  printf("join %d\n", wait((int*)thread));
+    printf("join %d\n", wait((int*)thread));
 }
