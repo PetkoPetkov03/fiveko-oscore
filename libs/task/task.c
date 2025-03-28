@@ -38,15 +38,29 @@ int create_task(void (*start_routine)())
     push(tcb_queue, task);
     printf("push end\n");
 
+    free(task->context.uc_stack.ss_sp);
+    free(task);
+
+    return 0;
+}
+
+int test_tasks(void)
+{
+    printf("task front: %d, %p\n",
+    tcb_queue->front->id, tcb_queue->front->content);
+
+    printf("task rear: %d, %p\n",
+    tcb_queue->rear->id, tcb_queue->rear->content);
+
+    printf("content: %p\n", pop(tcb_queue));
+
+    printf("task front: %d, %p\n",
+    tcb_queue->front->id, tcb_queue->front->content);
     return 0;
 }
 
 int task_flush(void)
 {
-    while(front(tcb_queue)) {
-        pop(tcb_queue);
-    }
-
     queue_destroy(&tcb_queue);
 
     if(tcb_queue != NULL) {

@@ -12,4 +12,6 @@ int create_task(void (*start_routine)());
 
 int task_flush(void);
 
+int test_tasks(void);
+
 #endif

@@ -25,6 +25,8 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    test_tasks();
+
     task_flush();
 
     return 0;

@@ -30,12 +30,11 @@ void push(queue* q, void* value)
     }
 
     new_node->id = 0;
+    new_node->content = value;
     if(q->rear) {
         new_node->id = q->rear->id + 1;
         q->rear->next = new_node;
     }
-
-    new_node->content = value;
 
     q->rear = new_node;
 
@@ -81,11 +80,13 @@ void queue_destroy(queue** q)
     if(!q && !*q) return;
 
     node* current = (*q)->front;
+    size_t i = 0;
 
-    while(current) {
+    while(i < (*q)->size && current) {
         node* temp = current;
         current = current->next;
         free(temp);
+        i++;
     }
 
     free(*q);
