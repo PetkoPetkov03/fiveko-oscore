@@ -2,11 +2,14 @@
 #define __OSCORE_Q__
 #include "../atomic/aint.h"
 #include <stdlib.h>
+#include <inttypes.h>
+
+typedef uint32_t u32;
 
 typedef struct __node__ {
-  atomic_int_t id;
-  void* content;
-  struct __node__* next;
+    u32 id;
+    void* content;
+    struct __node__* next;
 } node;
 
 typedef struct  __os_q__ {
@@ -19,11 +22,15 @@ queue* queue_init();
 
 void push(queue*, void*);
 
-void* pop(queue*);
+void pop(queue*);
 
 node* front(queue*);
 
-node* back(queue*);
+node* rear(queue*);
+
+void* unwrap_node(node* node);
+
+u32 node_gid(node* node);
 
 void queue_destroy(queue**);
 

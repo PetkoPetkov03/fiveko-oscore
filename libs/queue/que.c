@@ -47,17 +47,28 @@ void push(queue* q, void* value)
 
 node* front(queue* q)
 {
-  return (q && q->front) ? q->front->content : NULL;
+  return (q && q->front) ? q->front : NULL;
 }
 
-node* back(queue* q)
+node* rear(queue* q)
 {
-    return (q && q->rear) ? q->rear->content : NULL;
+    return (q && q->rear) ? q->rear : NULL;
 }
 
-void* pop(queue* q)
+void* unwrap_node(node* node) {
+    return node->content;
+}
+
+u32 node_gid(node* node) {
+    return node->id;
+}
+
+void pop(queue* q)
 {
-    if(!q && !q->front) return NULL;
+    if(!q && !q->front) {
+        perror("pop error");
+        return;
+    }
 
     node* temp = q->front;
 
@@ -68,11 +79,10 @@ void* pop(queue* q)
         q->rear = NULL;
     }
 
+    free(content);
     free(temp);
 
     q->size--;
-
-    return content;
 }
 
 void queue_destroy(queue** q)
