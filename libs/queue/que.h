@@ -26,11 +26,11 @@ void pop(queue*);
 
 node* front(queue*);
 
-node* rear(queue*);
+node* rear(queue*);;
 
-void* unwrap_node(node* node);
+u32 node_gid(node*);
 
-u32 node_gid(node* node);
+void* unwrap_node(node*);
 
 void queue_destroy(queue**);
 

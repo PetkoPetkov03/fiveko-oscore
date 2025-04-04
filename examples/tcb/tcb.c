@@ -25,7 +25,15 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    test_tasks();
+    task_t* running_task = fetch_running_task();
+
+    while(true) {
+        printf("task: %p, routine: %p\n", running_task, running_task->func);
+        if(switch_task() == -1) {
+            perror("critical task swapping error");
+            exit(EXIT_FAILURE);
+        }
+    }
 
     task_flush();
 

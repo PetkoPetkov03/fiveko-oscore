@@ -72,14 +72,11 @@ void pop(queue* q)
 
     node* temp = q->front;
 
-    void* content = temp->content;
-
     q->front = q->front->next;
     if(!q->front) {
         q->rear = NULL;
     }
 
-    free(content);
     free(temp);
 
     q->size--;
