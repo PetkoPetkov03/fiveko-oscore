@@ -18,73 +18,104 @@ void nob_mullti_append(Nob_Cmd* cmd, char** base, size_t size)
 
 int main(int argc, char** argv)
 {
-  NOB_GO_REBUILD_URSELF(argc, argv);
-  Nob_Cmd cmd = {0};
+    char* compiler;
 
-  if(!nob_mkdir_if_not_exists(BUILD)) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"queue")) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"atomic")) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"mutex")) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"semaphor")) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"threads")) return 1;
-  if(!nob_mkdir_if_not_exists(BUILD"task")) return 1;
+    if(argc <= 1) {
+        perror("unspecified compiler! (gcc, clang, etc)");
+        exit(EXIT_FAILURE);
+    }
 
-  char* base[4] = {
-    "gcc",
-    "-Wall",
-    "-Wextra",
-    "-O3"
-};
+    compiler = argv[1];
+    NOB_GO_REBUILD_URSELF(argc, argv);
+    Nob_Cmd cmd = {0};
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"queue/que.o", "-c", LIBS"queue/que.c");
+    if(!nob_mkdir_if_not_exists(BUILD)) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"queue")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"atomic")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"mutex")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"semaphor")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"threads")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"task")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"sigtimer")) return 1;
+    if(!nob_mkdir_if_not_exists(BUILD"dispatcher")) return 1;
 
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    char* base[4] = {
+        compiler,
+        "-Wall",
+        "-Wextra",
+        "-O3"
+    };
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"task/task.o", "-c",
-  LIBS"task/task.c");
+    /*
+    compile and link library
+    */
 
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"queue/que.o", "-c", LIBS"queue/que.c");
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"atomic/aint.o", "-c", LIBS"atomic/aint.c");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"task/task.o", "-c",
+    LIBS"task/task.c");
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"mutex/mutex.o", "-c", LIBS"mutex/mutex.c");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"semaphor/sem.o", "-c", LIBS"semaphor/sem.c");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o",
+    BUILD"dispatcher/fdispatch.o", "-c", LIBS"dispatcher/fdispatch.c");
 
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", BUILD"threads/threads.o", "-c",
-  LIBS"threads/threads.c");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"atomic/aint.o", "-c", LIBS"atomic/aint.c");
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"thread-exp/thread.a",
-                 EXAMPLES"thread-exp/thread.c", BUILD"threads/threads.o");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"aint-exmp/aintex.a",
-  EXAMPLES"aint-exmp/aintex.c", BUILD"atomic/aint.o");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"mutex/mutex.o", "-c", LIBS"mutex/mutex.c");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"semaphor/sem.o",
+    "-c", LIBS"semaphor/sem.c");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
 
-  nob_mullti_append(&cmd, base, 4);
-  nob_cmd_append(&cmd, "-o", EXAMPLES"tcb/tcb.a",
-  EXAMPLES"tcb/tcb.c", BUILD"task/task.o", BUILD"queue/que.o");
-  if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
-  // nob_mullti_append(&cmd, base, 4);
-  // nob_cmd_append(&cmd, "-o", EXAMPLES"queue-ex/q.a",
-  // EXAMPLES"queue-ex/q.c", BUILD"queue/que.o");
-  // if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", BUILD"threads/threads.o", "-c",
+    LIBS"threads/threads.c");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
 
-  return 0;
+    /*
+    build examples and link library
+    */
+
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", EXAMPLES"timer-ex/timer.a",
+    EXAMPLES"timer-ex/timer.c", BUILD"sigtimer/stm.o");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", EXAMPLES"thread-exp/thread.a",
+    EXAMPLES"thread-exp/thread.c", BUILD"threads/threads.o");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", EXAMPLES"aint-exmp/aintex.a",
+    EXAMPLES"aint-exmp/aintex.c", BUILD"atomic/aint.o");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+
+    nob_mullti_append(&cmd, base, 4);
+    nob_cmd_append(&cmd, "-o", EXAMPLES"tcb/tcb.a",
+    EXAMPLES"tcb/tcb.c", BUILD"task/task.o", BUILD"queue/que.o",
+    BUILD"dispatcher/fdispatch.o");
+    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+    // nob_mullti_append(&cmd, base, 4);
+    // nob_cmd_append(&cmd, "-o", EXAMPLES"queue-ex/q.a",
+    // EXAMPLES"queue-ex/q.c", BUILD"queue/que.o");
+    // if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
+
+    return 0;
 }

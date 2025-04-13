@@ -20,6 +20,6 @@ int task_exec();
 
 task_t* fetch_running_task();
 
-void task_term();
+void task_term(task_t* term_task);
 
 #endif

@@ -67,22 +67,23 @@ int task_exec() {
 }
 
 int switch_task() {
-    if(running_task == NULL) {
+    ucontext_t prev_context;
+    if(!running_task) {
         running_task = fetch_running_task();
+    }else{
+        printf("swap pop: %p\n", running_task);
+        prev_context = running_task->context;
+        pop(tcb_queue);
+        push(tcb_queue, running_task);
+
+        running_task = unwrap_node(front(tcb_queue));
     }
 
-    printf("swap pop: %p\n", running_task);
-    ucontext_t prev_context = running_task->context;
-    pop(tcb_queue);
-    push(tcb_queue, running_task);
-
-    running_task = unwrap_node(front(tcb_queue));
-
-    swapcontext(&(running_task->context), &prev_context);
+    swapcontext(&prev_context, &(running_task->context));
     printf("swap push: %p\n", running_task);
 
     if(running_task == NULL) {
-        //perror("task queue depleted unexpectidly");
+        perror("task queue depleted unexpectidly");
         return -1;
     }
 
