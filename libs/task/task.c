@@ -7,7 +7,6 @@
 
 static queue* tcb_queue;
 static task_t* running_task;
-static ucontext_t main_context;
 
 int create_task(void (*start_routine)())
 {

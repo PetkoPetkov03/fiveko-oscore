@@ -90,12 +90,6 @@ int main(int argc, char** argv)
     /*
     build examples and link library
     */
-
-    nob_mullti_append(&cmd, base, 4);
-    nob_cmd_append(&cmd, "-o", EXAMPLES"timer-ex/timer.a",
-    EXAMPLES"timer-ex/timer.c", BUILD"sigtimer/stm.o");
-    if(!nob_cmd_run_sync_and_reset(&cmd)) return 1;
-
     nob_mullti_append(&cmd, base, 4);
     nob_cmd_append(&cmd, "-o", EXAMPLES"thread-exp/thread.a",
     EXAMPLES"thread-exp/thread.c", BUILD"threads/threads.o");
